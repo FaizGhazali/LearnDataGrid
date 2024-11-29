@@ -1,0 +1,68 @@
+﻿<Window x:Class="LearnDataGrid.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LearnDataGrid"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel, IsDesignTimeCreatable=False}"
+        Style="{StaticResource MaterialDesignWindow}"
+        Title="Demo App" Height="450" Width="800">
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition />
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <Menu>
+      <MenuItem Header="_File"/>
+      <MenuItem Command="{Binding NewUserCommand}" Header="New User"/>
+
+    </Menu>
+
+    <DataGrid ItemsSource="{Binding Users}" AutoGenerateColumns="False" 
+              x:Name="MyDataGrid"
+              Grid.Row="1"
+              SelectionMode="Single"
+              SelectionUnit="FullRow"
+              CanUserAddRows="False"
+              FrozenColumnCount="1"
+              >
+      <DataGrid.Columns>
+        <DataGridTextColumn Binding="{Binding Id, Mode=OneWay}" Header="Id" IsReadOnly="True"/>
+        <DataGridTextColumn Binding="{Binding Name}" Header="Name" Width="1*"/>
+        <DataGridTextColumn Binding="{Binding Age}" Header="Age" Width="1*"/>
+        <DataGridTemplateColumn Header="Actions" Width="1*">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate DataType="{x:Type local:User}">
+              <Button 
+                Content="Delete"
+                CommandParameter="{Binding}"
+                Command="{Binding DataContext.DeleteUserCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+          <DataGridTemplateColumn.CellEditingTemplate>
+            <DataTemplate>
+              <Button 
+                  Content="Editing"
+                  CommandParameter="{Binding}"
+                  Command="{Binding DataContext.DeleteUserCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"/> 
+            </DataTemplate>
+          </DataGridTemplateColumn.CellEditingTemplate>
+          <DataGridTemplateColumn.CellStyle>
+            <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+              <Style.Triggers>
+                <Trigger Property="IsEditing" Value="True">
+                  <Setter Property="Background" Value="Red"/>
+                </Trigger>
+              </Style.Triggers>
+            </Style>
+          </DataGridTemplateColumn.CellStyle>
+        </DataGridTemplateColumn>
+      </DataGrid.Columns>
+    </DataGrid>
+
+
+  </Grid>
+</Window>
