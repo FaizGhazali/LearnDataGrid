@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:LearnDataGrid"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel, IsDesignTimeCreatable=False}"
@@ -29,17 +30,48 @@
               CanUserAddRows="False"
               FrozenColumnCount="1"
               >
+      <DataGrid.Resources>
+        <Style TargetType="TextBlock" x:Key="ReadOnlyTextStyle">
+          <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+      </DataGrid.Resources>
+      <DataGrid.RowStyle>
+        <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+          <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+              <Setter Property="Background" Value="Red"/>
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </DataGrid.RowStyle>
       <DataGrid.Columns>
-        <DataGridTextColumn Binding="{Binding Id, Mode=OneWay}" Header="Id" IsReadOnly="True"/>
-        <DataGridTextColumn Binding="{Binding Name}" Header="Name" Width="1*"/>
-        <DataGridTextColumn Binding="{Binding Age}" Header="Age" Width="1*"/>
+        <DataGridTextColumn Binding="{Binding Id, Mode=OneWay}" IsReadOnly="True">
+          <DataGridTextColumn.Header>
+            <StackPanel Orientation="Horizontal">
+              <materialDesign:PackIcon Kind="IdCard"/>
+              <TextBlock Text="ID" Margin="10,0,0,0"/>
+            </StackPanel>
+          </DataGridTextColumn.Header>
+          <DataGridTextColumn.ElementStyle>
+            <Style TargetType="TextBlock">
+              <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+          </DataGridTextColumn.ElementStyle>
+        </DataGridTextColumn>
+        <DataGridTextColumn Binding="{Binding Name}" Header="Name" Width="1*" ElementStyle="{StaticResource ReadOnlyTextStyle}">
+          
+        </DataGridTextColumn>
+        <DataGridTextColumn Binding="{Binding Age}" Header="Age" Width="1*" ElementStyle="{StaticResource ReadOnlyTextStyle}">
+          
+        </DataGridTextColumn>
         <DataGridTemplateColumn Header="Actions" Width="1*">
           <DataGridTemplateColumn.CellTemplate>
             <DataTemplate DataType="{x:Type local:User}">
-              <Button 
-                Content="Delete"
-                CommandParameter="{Binding}"
-                Command="{Binding DataContext.DeleteUserCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+              <TextBlock
+                Cursor="Hand"
+                Foreground="LightBlue"
+                Text="Edit"
+                TextDecorations="Underline"/>
             </DataTemplate>
           </DataGridTemplateColumn.CellTemplate>
           <DataGridTemplateColumn.CellEditingTemplate>
@@ -54,12 +86,14 @@
             <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
               <Style.Triggers>
                 <Trigger Property="IsEditing" Value="True">
+                  <Setter Property="Padding" Value="6"/>
                   <Setter Property="Background" Value="Red"/>
                 </Trigger>
               </Style.Triggers>
             </Style>
           </DataGridTemplateColumn.CellStyle>
         </DataGridTemplateColumn>
+        <materialDesign:DataGridComboBoxColumn Header="Type" Width="1*" SelectedItemBinding="{Binding Type}" ItemsSourceBinding="{Binding DataContext.UserTypes, RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
       </DataGrid.Columns>
     </DataGrid>
 

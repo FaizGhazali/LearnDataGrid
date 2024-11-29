@@ -7,7 +7,11 @@ namespace LearnDataGrid;
 
 public partial class MainWindowViewModel : ObservableObject
 {
-
+    public List<string> UserTypes { get; } = new List<string>
+    {
+        "Admin",
+        "Standart"
+    };
     public ObservableCollection<User> Users { get; } = new();
 
     public MainWindowViewModel()
